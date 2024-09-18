@@ -1,0 +1,17 @@
+.button {
+  padding: 10px 20px;
+  font-size: 16px; /* Ensure text is visible */
+  background-color: #7ED321;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  color: white;
+}
+
+.button:hover {
+  background-color: #6DB021;
+}
+
+.full-width {
+  width: 100%; /* Full width */
+}

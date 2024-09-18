@@ -1,0 +1,51 @@
+/* Login.css */
+
+/* Default background for mobile and tablets */
+.login-page {
+  background: url('images/Vitary-app.jpeg') center center fixed;
+  background-size: cover; /* Ensure background covers the full page */
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 20px;
+}
+
+.login-container {
+  width: 100%;
+  max-width: 400px;
+}
+
+.error-text {
+  color: red;
+  margin-top: 10px;
+  font-size: 0.9rem;
+}
+
+.login-btn {
+  margin: 20px auto; /* Center button horizontally and add vertical margin */
+  display: block; /* Ensure the button is a block-level element for centering */
+}
+
+/* Background for desktops */
+@media (min-width: 1024px) {
+  .login-page {
+    background: url('images/Vitary-pad1080p.jpg') center center fixed;
+  }
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+  .login-container {
+    width: 90%; /* Take up more width on smaller screens */
+  }
+  
+  .language-switcher {
+    margin-bottom: 15px; /* Reduce margin for smaller screens */
+  }
+  
+  .language-switcher img {
+    width: 25px; /* Smaller flags for smaller screens */
+    margin: 0 8px; /* Adjust spacing for smaller screens */
+  }
+}
