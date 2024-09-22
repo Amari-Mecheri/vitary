@@ -2,7 +2,7 @@
 
 /* Default background for mobile and tablets */
 .login-page {
-  background: url('images/Vitary-app.jpeg') center center fixed;
+  background: url('../images/Vitary-app.jpeg') center center fixed;
   background-size: cover; /* Ensure background covers the full page */
   height: 100vh;
   display: flex;
@@ -30,7 +30,7 @@
 /* Background for desktops */
 @media (min-width: 1024px) {
   .login-page {
-    background: url('images/Vitary-pad1080p.jpg') center center fixed;
+    background: url('../images/Vitary-pad1080p.jpg') center center fixed;
   }
 }
 

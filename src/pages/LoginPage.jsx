@@ -1,20 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import bcrypt from 'bcryptjs';
-import Card from './components/Card/Card';
-import InputField from './components/InputField/InputField';
-import Button from './components/Button/Button';
-import LanguageSelector from './components/LanguageSelector/LanguageSelector';
-import DynamicLabel from './components/DynamicLabel/DynamicLabel';
-import './Login.css';
+import Card from '../components/Card/Card';
+import InputField from '../components/InputField/InputField';
+import Button from '../components/Button/Button';
+import LanguageSelector from '../components/LanguageSelector/LanguageSelector';
+import DynamicLabel from '../components/DynamicLabel/DynamicLabel';
+import './LoginPage.css';
 import { useTranslation } from 'react-i18next';
-import * as Database from './Database'; // Import Database
+import * as Database from '../db/Database';
+import { useNavigate } from 'react-router-dom'; // For navigation
 
-const Login = () => {
+const LoginPage = () => {
   const { t } = useTranslation();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [errorKey, setErrorKey] = useState(''); // Store error key instead of message
+  const [errorKey, setErrorKey] = useState('');
   const [db, setDb] = useState(null);
+  const navigate = useNavigate(); // For programmatic navigation
 
   // Fetch the database on component mount
   useEffect(() => {
@@ -26,7 +28,7 @@ const Login = () => {
   }, []);
 
   const handleLogin = async () => {
-    if (!db) return; // If DB is not loaded, return
+    if (!db) return;
 
     try {
       const user = await db.users.findOne({
@@ -34,12 +36,20 @@ const Login = () => {
       }).exec();
 
       if (user && bcrypt.compareSync(password, user.password)) {
-        alert(t('login_success'));
+        // Login successful, store user details in localStorage
+        const loggedInUser = {
+          username: user._id,
+          role: user.role // Assuming 'role' is stored in the user document
+        };
+        localStorage.setItem('user', JSON.stringify(loggedInUser)); // Store user in localStorage
+
+        // Redirect to the dashboard or another protected page
+        navigate('/dashboardlayout');
       } else {
-        setErrorKey('invalid_credentials'); // Set the error key, not the actual message
+        setErrorKey('invalid_credentials');
       }
     } catch (err) {
-      setErrorKey('invalid_credentials'); // Set the error key
+      setErrorKey('invalid_credentials');
       console.error('Login error:', err);
     }
   };
@@ -47,7 +57,7 @@ const Login = () => {
   return (
     <div className="login-page">
       <div className="login-container">
-        <Card title={<DynamicLabel id="login" />} opacity={0.85}> {/* Use DynamicLabel for card title */}
+        <Card title={<DynamicLabel id="login" />} opacity={0.85}>
           <LanguageSelector />
           <form
             onSubmit={(e) => {
@@ -70,7 +80,7 @@ const Login = () => {
             <Button type="submit" className="login-btn" fullWidth>
               <DynamicLabel id="login" />
             </Button>
-            {errorKey && <p className="error-text">{t(errorKey)}</p>} {/* Dynamic error message */}
+            {errorKey && <p className="error-text">{t(errorKey)}</p>}
           </form>
         </Card>
       </div>
@@ -78,4 +88,9 @@ const Login = () => {
   );
 };
 
-export default Login;
+LoginPage.getAccessInfo = () => ({
+  requiresLogin: false, // Public page
+  permissions: []
+});
+
+export default LoginPage;

@@ -1,0 +1,18 @@
+.main-layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Ensures it takes up the full height */
+  }
+  
+  main {
+    flex-grow: 1; /* Makes main content area take up remaining space */
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-x: hidden; /* Prevents horizontal overflow */
+  }
+  
+  footer {
+    text-align: center;
+    padding: 10px;
+  }
+  

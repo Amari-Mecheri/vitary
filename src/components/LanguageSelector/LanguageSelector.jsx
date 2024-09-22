@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import i18n from '../../i18n';
+import i18n from '../../config/i18n';
 import './LanguageSelector.css';
 
 const LanguageSelector = () => {
@@ -20,25 +20,25 @@ const LanguageSelector = () => {
   }, []);
 
   return (
-    <div className="language-selector">
+    <div className={`language-selector ${i18n.dir()}`}>
       <img
         src="flags/gb.png"
         alt="English"
-        title="English"  // Tooltip for English flag
+        title="English"
         onClick={() => changeLanguage('en')}
         className={selectedLanguage === 'en' ? 'selected' : ''}
       />
       <img
         src="flags/fr.png"
         alt="Français"
-        title="Français"  // Tooltip for French flag
+        title="Français"
         onClick={() => changeLanguage('fr')}
         className={selectedLanguage === 'fr' ? 'selected' : ''}
       />
       <img
         src="flags/dz.png"
         alt="العربية"
-        title="العربية"  // Tooltip for Arabic flag
+        title="العربية"
         onClick={() => changeLanguage('ar')}
         className={selectedLanguage === 'ar' ? 'selected' : ''}
       />

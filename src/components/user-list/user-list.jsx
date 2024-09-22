@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import * as Database from '../Database';
+import * as Database from '../../db/Database';
 import './user-list.css';
 
 class UserList extends Component {

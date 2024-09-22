@@ -1,0 +1,14 @@
+.modal-dialog {
+    max-width: 90%; /* Adjusts for smaller screens */
+  }
+  
+  .modal-body {
+    font-size: 1rem;
+  }
+  
+  @media (min-width: 768px) {
+    .modal-dialog {
+      max-width: 600px;
+    }
+  }
+  

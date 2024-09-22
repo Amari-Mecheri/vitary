@@ -5,7 +5,8 @@ import {
 import {
     getRxStorageDexie
 } from 'rxdb/plugins/storage-dexie';
-import { userSchema } from './Schema'; // Import the updated user schema
+import { userSchema } from './userSchema';
+import { roleSchema } from './roleSchema';
 import { replicateCouchDB } from 'rxdb/plugins/replication-couchdb';
 import { RxDBLeaderElectionPlugin } from 'rxdb/plugins/leader-election';
 
@@ -40,10 +41,10 @@ const _create = async () => {
     console.log('DatabaseService: create collections');
     await db.addCollections({
         users: {
-            schema: userSchema,
-            methods: {
-                // Define any methods you need
-            }
+            schema: userSchema
+        },
+        roles: {  // Add roles collection
+            schema: roleSchema
         }
     });
 

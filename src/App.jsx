@@ -1,42 +1,54 @@
-// src/App.js
+import React, { useState, useEffect, useMemo } from 'react'; 
 import './App.css';
-import * as Database from './Database';
-import Login from './Login';
-import './i18n';
+import { BrowserRouter as Router } from 'react-router-dom';
+import { AlertProvider } from './components/CustomAlert/AlertProvider'; 
+import { fetchDatabase } from './services/AuthService';
+import { fetchRoles } from './services/RoleService';
+import { getUserFromStorage } from './services/UserService';
+import { registerPages } from './services/PageService';
+import AppRoutes from './components/AppRoutes';
+import './config/i18n';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
-    const db =  Database.get();
+  const [loading, setLoading] = useState(true);
+  const [roles, setRoles] = useState([]);
 
+  // Load the database and roles
+  useEffect(() => {
+    const initializeApp = async () => {
+      try {
+        await fetchDatabase(); // This can be handled if you want to do something with the db
+        const rolesData = await fetchRoles();
+        setRoles(rolesData);
+      } catch (error) {
+        console.error("Error initializing app:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    initializeApp();
+  }, []);
 
-  if (!db) {
+  // Get the current user from localStorage
+  const user = useMemo(getUserFromStorage, []);
+
+  // Register pages once at startup
+  useEffect(() => {
+    registerPages();
+  }, []);
+
+  if (loading) {
     return <div>Loading...</div>;
   }
 
   return (
-    <div className="App">
-      <Login db={db} />
-    </div>
+    <Router>
+      <AlertProvider>
+        <AppRoutes user={user} roles={roles} />
+      </AlertProvider>
+    </Router>
   );
 }
 
 export default App;
-
-
-// import React from 'react';
-// import './App.css';
-
-// import UserList from './user-list/user-list';
-// import UserInsert from './user-insert/user-insert';
-
-// const App = () => {
-//     return (
-//         <div>
-//             <h1>RxDB Example - React</h1>
-//             <UserList/>
-//             <UserInsert/>
-//         </div>
-//     );
-// };
-
-// export default App;
