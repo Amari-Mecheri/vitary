@@ -2,11 +2,11 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import PageRegistry from '../config/PageRegistry';
-import { getCurrentUser } from '../services/AuthService';
+import { useUser } from '../services/UserContext'; // Import the custom hook
 import AccessControlledRoute from './AccessControlledRoute';
 import NotFoundPage from '../pages/NotFoundPage';
 import MainLayout from '../layouts/MainLayout';
-import CustomModal from '../components/CustomModal/CustomModal'; // Import your custom modal
+import CustomModal from '../components/CustomModal/CustomModal';
 import { fetchRoles } from '../services/RoleService';
 
 function AppRoutes() {
@@ -14,7 +14,7 @@ function AppRoutes() {
   const [loading, setLoading] = useState(true);
   const [alertMessage, setAlertMessage] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const user = getCurrentUser();
+  const { connectedUser } = useUser(); // Use the UserContext
   const [roles, setRoles] = useState([]);
 
   const showAlert = useCallback((message) => {
@@ -47,8 +47,11 @@ function AppRoutes() {
 
   return (
     <>
-      {/* Using the custom modal component */}
-      <CustomModal show={isModalVisible} handleClose={closeModal} message={alertMessage} />
+      <CustomModal
+        show={isModalVisible}
+        handleClose={closeModal}
+        message={alertMessage}
+      />
 
       <Routes>
         {PageRegistry.getAllPages().map((page) => (
@@ -58,7 +61,7 @@ function AppRoutes() {
             element={
               <AccessControlledRoute
                 element={
-                  page.path !== '/login' && page.path !== '*' ? (
+                  page.path !== "/login" && page.path !== "*" ? (
                     <MainLayout>
                       <page.component showAlert={showAlert} />
                     </MainLayout>
@@ -68,12 +71,29 @@ function AppRoutes() {
                 }
                 path={page.path}
                 showAlert={showAlert}
-                roles={roles} // Pass the fetched roles to AccessControlledRoute
+                roles={roles}
+                user={connectedUser} // Pass the connectedUser to AccessControlledRoute
               />
             }
           />
         ))}
-        <Route path="/" element={user ? <Navigate to="/information" /> : <Navigate to="/login" />} />
+        <Route
+          path="/"
+          element={
+            connectedUser ? (
+              <Navigate
+                to={
+                  localStorage.getItem(
+                    `lastVisitedPath_${connectedUser.username}`
+                  ) || "/default-path"
+                }
+              />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </>

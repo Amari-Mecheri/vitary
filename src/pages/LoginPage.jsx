@@ -8,7 +8,7 @@ import DynamicLabel from '../components/DynamicLabel/DynamicLabel';
 import './LoginPage.css';
 import { useTranslation } from 'react-i18next';
 import * as Database from '../db/Database';
-import { useNavigate } from 'react-router-dom'; // For navigation
+import { useUser } from '../services/UserContext';
 
 const LoginPage = () => {
   const { t } = useTranslation();
@@ -16,7 +16,7 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [errorKey, setErrorKey] = useState('');
   const [db, setDb] = useState(null);
-  const navigate = useNavigate(); // For programmatic navigation
+  const { setConnectedUser } = useUser();
 
   // Fetch the database on component mount
   useEffect(() => {
@@ -28,23 +28,29 @@ const LoginPage = () => {
   }, []);
 
   const handleLogin = async () => {
-    if (!db) return;
+    if (!db) {
+      console.log('Database not loaded yet');
+      return;
+    }
 
     try {
       const user = await db.users.findOne({
-        selector: { _id: username } // Match username with _id
+        selector: { _id: username }
       }).exec();
 
       if (user && bcrypt.compareSync(password, user.password)) {
-        // Login successful, store user details in localStorage
+        console.log('Login successful');
+
+        // Login successful, store user details in context
         const loggedInUser = {
           username: user._id,
-          role: user.role // Assuming 'role' is stored in the user document
+          role: user.role
         };
-        localStorage.setItem('user', JSON.stringify(loggedInUser)); // Store user in localStorage
 
-        // Redirect to the dashboard or another protected page
-        navigate('/dashboardlayout');
+        console.log('Setting connected user:', loggedInUser);
+        setConnectedUser(loggedInUser); // Use context
+
+        // No manual navigation, expect routing to trigger automatically
       } else {
         setErrorKey('invalid_credentials');
       }

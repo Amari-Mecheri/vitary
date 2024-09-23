@@ -1,13 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom'; 
 import LanguageSelector from '../LanguageSelector/LanguageSelector'; 
+import MenuItem from './MenuItem'; 
 import i18n from '../../config/i18n'; 
+import { useUser } from '../../services/UserContext'; 
 import './Navbar.css'; 
 
 const Navbar = () => {
-  const location = useLocation();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false); 
-  const userMenuRef = useRef(null); // Ref to user menu
+  const userMenuRef = useRef(null);
+  const { connectedUser, setConnectedUser } = useUser();
 
   const menuItems = [
     { path: '/user-management', label: i18n.t('userManagement'), icon: 'user-icon.png' },
@@ -18,7 +20,6 @@ const Navbar = () => {
     { path: '/client-files', label: i18n.t('clientFiles'), icon: 'client-icon.png' },
   ];
 
-  // Close menu when clicking outside or pressing ESC
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
@@ -41,49 +42,56 @@ const Navbar = () => {
     };
   }, [userMenuRef]);
 
+  const handleLogout = () => {
+    const currentPath = window.location.pathname;
+    if (connectedUser) {
+      localStorage.setItem(`lastVisitedPath_${connectedUser.username}`, currentPath);
+    }
+    setConnectedUser(null);
+  };
+
   return (
     <nav className={`navbar ${i18n.dir()}`}>
-      {/* Left: Navigation Icons */}
       <div className="navbar-left">
         <ul className="navbar-list">
           {menuItems.map((item) => (
-            <li key={item.path} className={`nav-item ${location.pathname === item.path ? 'active' : ''}`}>
-              <Link to={item.path}>
-                <img src={`/icons/${item.icon}`} alt={item.label} />
-                <span>{item.label}</span>
-              </Link>
-            </li>
+            <MenuItem key={item.path} {...item} />
           ))}
         </ul>
       </div>
 
-      {/* Center: User/Logout Button with Dropdown */}
       <div className="navbar-center" ref={userMenuRef}>
-        <div className="user-menu">
-          <button className="user-button" onClick={() => setIsUserMenuOpen(prev => !prev)}>
-            <img src="/icons/user-icon.png" alt="User" />
-            <span>{i18n.t('user')}</span>
-            <span className="arrow-down">▼</span>
-          </button>
-          {isUserMenuOpen && (
-            <ul className="dropdown-menu">
-              <li>
-                <Link to="/settings">{i18n.t('settings')}</Link>
-              </li>
-              <li>
-                <Link to="/change-password">{i18n.t('changePassword')}</Link>
-              </li>
-              <li>
-                <button onClick={() => console.log('Logged out')}>
-                  {i18n.t('logout')}
-                </button>
-              </li>
-            </ul>
-          )}
-        </div>
+        {connectedUser ? (
+          <div className="user-menu">
+            <button className="user-button" onClick={() => setIsUserMenuOpen(prev => !prev)}>
+              <i className="bi bi-person"></i>
+              <span>{connectedUser.username}</span>
+              <span className="arrow-down">▼</span>
+            </button>
+            {isUserMenuOpen && (
+              <ul className="dropdown-menu">
+                <li>
+                  <Link to="/settings">{i18n.t('settings')}</Link>
+                </li>
+                <li>
+                  <Link to="/change-password">{i18n.t('changePassword')}</Link>
+                </li>
+                <li>
+                  <button className="logout-button" onClick={handleLogout}>
+                    <i className="bi bi-box-arrow-right"></i>
+                    {i18n.t('logout')}
+                  </button>
+                </li>
+              </ul>
+            )}
+          </div>
+        ) : (
+          <Link to="/login" className="login-link">
+            {i18n.t('login')}
+          </Link>
+        )}
       </div>
 
-      {/* Right: Language Selector */}
       <div className="navbar-right">
         <LanguageSelector />
       </div>

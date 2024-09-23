@@ -1,11 +1,11 @@
 .navbar {
-  background-color: #34495E;
-  padding: 10px;
+  background: linear-gradient(135deg, #246fac 0%, #a6c5ff 100%);
+  padding: 15px 20px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap; /* Enable wrapping on smaller screens */
-  height: auto; /* Allow height to adjust based on content */
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .navbar-list {
@@ -13,56 +13,25 @@
   list-style: none;
   padding: 0;
   margin: 0;
-  flex-wrap: wrap; /* Allow wrapping if there's not enough space */
-  width: 100%; /* Full width for navbar items */
 }
 
 .navbar-left {
   display: flex;
   align-items: center;
-  flex-grow: 1; /* Take available space */
-  justify-content: flex-start; /* Align to the left */
+  flex-grow: 1;
+  justify-content: flex-start;
 }
 
 .navbar-center {
   display: flex;
   align-items: center;
-  flex-grow: 2; /* Take more space for nav items */
-  justify-content: center; /* Center navigation icons */
+  margin-right: 10px; /* Add some space between user button and language selector */
 }
 
 .navbar-right {
   display: flex;
   align-items: center;
-  justify-content: flex-end; /* Align user and language selector to the right */
-}
-
-.nav-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-right: 20px;
-  transition: transform 0.2s ease, box-shadow 0.3s ease;
-}
-
-.nav-item img {
-  width: 30px;
-  height: auto;
-}
-
-.nav-item span {
-  margin-top: 5px;
-  color: white;
-  font-size: 12px;
-}
-
-.nav-item:hover {
-  transform: translateY(3px); /* Hover animation */
-}
-
-.nav-item.active {
-  transform: translateY(5px); /* Pushed down for active page */
-  box-shadow: 0 0 10px rgba(0, 255, 200, 0.8); /* Glow effect */
+  justify-content: flex-end;
 }
 
 .user-button {
@@ -83,24 +52,25 @@
   border: none;
   color: white;
   display: flex;
-  flex-direction: row; /* Ensure the logout button is aligned */
   align-items: center;
   cursor: pointer;
-}
-
-.logout-button:hover {
-  transform: translateY(3px);
 }
 
 .dropdown-menu {
   position: absolute;
   top: 100%;
-  right: 0;
+  right: 0; /* Align to the right for LTR */
   background-color: white;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   list-style: none;
   padding: 10px;
-  z-index: 1000; /* Ensure dropdown is above other content */
+  z-index: 1000;
+}
+
+/* Adjust dropdown positioning for RTL */
+[dir='rtl'] .dropdown-menu {
+  right: auto; /* Reset right */
+  left: 0; /* Align to the left for RTL */
 }
 
 .dropdown-menu li {
@@ -111,53 +81,27 @@
 .dropdown-menu li button {
   color: #34495E;
   text-decoration: none;
+  width: 100%;
+}
+
+.dropdown-menu li:hover {
+  background-color: #f0f0f0;
 }
 
 @media (max-width: 768px) {
   .navbar {
-    justify-content: center; /* Center items on smaller screens */
+    justify-content: center;
   }
 
-  .nav-item {
-    flex-basis: auto; /* Auto to take necessary space */
-    margin-right: 10px;
-  }
-  
   .navbar-list {
-    justify-content: center; /* Center navbar items */
+    justify-content: center;
   }
 }
 
 .user-menu {
   position: relative;
 }
-.dropdown-menu {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  background-color: white;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-  list-style: none;
-  padding: 10px;
-  z-index: 1000; /* Ensure dropdown is above other content */
-  display: none; /* Hide by default */
-}
 
 .user-menu .dropdown-menu {
   display: block; /* Show when the user menu is open */
-}
-
-.dropdown-menu li {
-  padding: 10px;
-}
-
-.dropdown-menu li:hover {
-  background-color: #f0f0f0; /* Change background on hover */
-}
-
-.dropdown-menu li a,
-.dropdown-menu li button {
-  color: #34495E;
-  text-decoration: none;
-  width: 100%; /* Ensure button takes full width */
 }
